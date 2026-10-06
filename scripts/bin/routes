@@ -1,0 +1,8 @@
+#!/bin/sh
+# desc: show interfaces, addresses, routes and DNS resolvers on one screen
+# usage: routes
+set -eu
+case "${1:-}" in -h | --help) sed -n 's/^# usage: //p' "$0"; exit ;; esac
+echo '== addresses'; ip -br addr
+echo; echo '== routes'; ip route
+echo; echo '== resolvers'; grep -E '^(nameserver|search|options)' /etc/resolv.conf

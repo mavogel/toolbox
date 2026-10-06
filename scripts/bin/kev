@@ -1,0 +1,9 @@
+#!/bin/sh
+# desc: recent Warning events in a namespace, oldest first
+# usage: kev [namespace|-A]
+set -eu
+case "${1:-}" in -h | --help) sed -n 's/^# usage: //p' "$0"; exit ;; esac
+if [ "${1:-}" = "-A" ]; then
+  exec kubectl get events -A --field-selector type=Warning --sort-by=.lastTimestamp
+fi
+exec kubectl get events -n "${1:-${NAMESPACE:-default}}" --field-selector type=Warning --sort-by=.lastTimestamp

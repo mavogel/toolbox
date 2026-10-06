@@ -1,0 +1,6 @@
+#!/bin/sh
+# desc: tail logs of all pods matching a name pattern (stern)
+# usage: klogs <pod-regex> [namespace] [since=15m]
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+exec stern "$1" -n "${2:-${NAMESPACE:-default}}" --since "${3:-15m}"

@@ -1,0 +1,9 @@
+#!/bin/sh
+# desc: quick nmap TCP scan (top 100 ports unless ports are given)
+# usage: scanp <host> [ports e.g. 22,80,443 or 1-1024]
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+if [ -n "${2:-}" ]; then
+  exec nmap -Pn -T4 -p "$2" "$1"
+fi
+exec nmap -Pn -T4 --top-ports 100 "$1"

@@ -1,0 +1,9 @@
+#!/bin/sh
+# desc: status and user-supplied values of a Helm release
+# usage: hvals <release> [namespace]
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+ns=${2:-${NAMESPACE:-default}}
+helm status "$1" -n "$ns"
+echo; echo '== values'
+helm get values "$1" -n "$ns"

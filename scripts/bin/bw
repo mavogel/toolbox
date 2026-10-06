@@ -1,0 +1,9 @@
+#!/bin/sh
+# desc: iperf3 throughput test as client, or start a server with -s
+# usage: bw <server> [seconds=10] | bw -s [port=5201]
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+if [ "$1" = "-s" ]; then
+  exec iperf3 -s -p "${2:-5201}"
+fi
+exec iperf3 -c "$1" -t "${2:-10}"

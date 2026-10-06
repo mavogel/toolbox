@@ -1,0 +1,7 @@
+#!/bin/sh
+# desc: kubectl get -o yaml without managedFields/status noise
+# usage: kyaml <kubectl get args...>   e.g. kyaml deploy/foo -n bar
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+kubectl get "$@" -o yaml |
+  yq 'del(.metadata.managedFields) | del(.status) | del(.items[].metadata.managedFields) | del(.items[].status)'

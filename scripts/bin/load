@@ -1,0 +1,8 @@
+#!/bin/sh
+# desc: constant-rate HTTP load test with latency summary (vegeta)
+# usage: load <url> [rate/s=10] [seconds=10] [method=GET]
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+echo "${4:-GET} $1" |
+  vegeta attack -rate="${2:-10}" -duration="${3:-10}s" |
+  vegeta report
