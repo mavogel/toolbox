@@ -41,6 +41,12 @@
       "semanticCommitScope": "deps"
     },
     {
+      "description": "Preset 10.x needs conventional-changelog-writer 9, but semantic-release 25 bundles writer 8; lift this cap once semantic-release moves to writer 9",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["conventional-changelog-conventionalcommits"],
+      "allowedVersions": "<10"
+    },
+    {
       "description": "One PR for the Alpine digest bump",
       "matchDepNames": ["alpine"],
       "groupName": "alpine base image"
