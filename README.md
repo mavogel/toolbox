@@ -4,14 +4,14 @@ A minimal, hardened debugging toolbox for container environments such as
 Kubernetes. One Alpine-based, non-root image with the network, DNS, TLS and
 cluster-inspection binaries that production images leave out.
 
-`ghcr.io/mavogel/toolbox` — `linux/amd64` and `linux/arm64`.
+`ghcr.io/mavogel/toolbox` (for `linux/amd64` and `linux/arm64`)
 
 ## Usage
 
 Start a throwaway pod with a shell:
 
 ```sh
-kubectl run toolbox --rm -it --image=ghcr.io/mavogel/toolbox:1 -- sh
+kubectl run toolbox-$(whoami) --rm -it --image=ghcr.io/mavogel/toolbox:1 -- sh
 ```
 
 Attach to a running pod (shares its network namespace) or a node:
@@ -25,16 +25,6 @@ The image runs as UID `10001` and grants no capabilities. For raw captures
 (`tcpdump`, `nmap` raw modes) opt in at run time, for example with
 `kubectl debug --profile=netadmin`, or a pod `securityContext` that runs as root
 with `NET_RAW` / `NET_ADMIN`.
-
-The GHCR package is private while the repository is. Create a pull secret from a
-token with `read:packages` and reference it:
-
-```sh
-kubectl create secret docker-registry ghcr \
-  --docker-server=ghcr.io --docker-username=<user> --docker-password=<token>
-kubectl run toolbox --rm -it --image=ghcr.io/mavogel/toolbox:1 \
-  --overrides='{"spec":{"imagePullSecrets":[{"name":"ghcr"}]}}' -- sh
-```
 
 ## Tools
 
@@ -110,11 +100,3 @@ versions pinned as `ARG <TOOL>_VERSION` in the `Dockerfile`, the Alpine base
 digest, GitHub Actions, pre-commit hook revisions and npm dev dependencies.
 Tool and base-image updates are `fix(deps)` commits, so they release a patch
 version; tooling updates are `chore(deps)` and do not.
-
-## Protecting `main`
-
-`main` is protected by a repository ruleset named `protect-main`: changes need a
-pull request (squash merge only) with the `lint`, `pr-title` and both
-`build-test` checks passing on an up-to-date branch, history stays linear, and
-force-push and deletion are blocked. Rulesets on private repositories need a
-paid GitHub plan.

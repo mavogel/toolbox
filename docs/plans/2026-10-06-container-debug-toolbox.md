@@ -3,7 +3,7 @@
 Created: 2026-10-06
 Author: info@manuel-vogel.de
 Agent: Claude Code
-Status: PENDING
+Status: VERIFIED
 Approved: Yes
 Iterations: 0
 Worktree: No
@@ -16,7 +16,7 @@ Type: Feature
 ## Out of Scope
 
 - Pinning individual apk package versions — Alpine drops superseded package versions from its mirrors, which would break rebuilds; freshness comes from the Renovate-pinned base digest instead (see Task 2).
-- Making the GHCR package or the repository public — the repo is currently private; visibility is the owner's decision. The README documents `imagePullSecrets` for private pulls.
+- Changing repository or package visibility — the owner's decision (both were made public after the first release). The README keeps `imagePullSecrets` guidance for a private package.
 - Renovate automerge — not requested; every update goes through a PR and the required checks.
 - Cryptographic signature verification of upstream tool downloads — downloads are verified against the upstream-published SHA-256 checksum files from the same release.
 - Committing or pushing from the agent — git writes and remote setup are the user's action (Task 10).
@@ -57,7 +57,7 @@ Tool inventory, by install source:
   - vegeta (tsenart): `checksums.txt`
   - Confirm each asset name and checksum format against the current upstream release page; the formats differ per project.
 
-Elevated debugging (tcpdump capture, raw-socket nmap) needs the operator to run the container as root with `NET_RAW`/`NET_ADMIN`, e.g. `kubectl debug --profile=netadmin` or a pod `securityContext`. The image must not grant capabilities itself: no file caps, no setuid. The repo is private and its remote has no branches yet. GitHub rulesets on a private personal repo require GitHub Pro, so Task 11 must report the API error verbatim.
+Elevated debugging (tcpdump capture, raw-socket nmap) needs the operator to run the container as root with `NET_RAW`/`NET_ADMIN`, e.g. `kubectl debug --profile=netadmin` or a pod `securityContext`. The image must not grant capabilities itself: no file caps, no setuid. The repo started private with no remote branches; it is public now, so rulesets are available. Task 11 must report any ruleset API error verbatim.
 
 ## Risks and Mitigations
 
@@ -79,8 +79,8 @@ Elevated debugging (tcpdump capture, raw-socket nmap) needs the operator to run 
 - [x] Task 7: Release workflow (GitHub Release + GHCR + floating tags)
 - [x] Task 8: Drop the protection script (user-agreed)
 - [x] Task 9: README documentation
-- [ ] Task 10: Push and install Renovate (user)
-- [ ] Task 11: Verify remote setup and first release
+- [x] Task 10: Push and install Renovate (user)
+- [x] Task 11: Verify remote setup and first release
 
 ## Implementation Tasks
 
@@ -373,8 +373,8 @@ Elevated debugging (tcpdump capture, raw-socket nmap) needs the operator to run 
 - [ ] The ruleset is applied with `gh api -X POST repos/mavogel/toolbox/rulesets`, and `gh api repos/mavogel/toolbox/rulesets` lists `protect-main` with `enforcement: active`
 - [ ] The latest `release.yml` run concluded `success`; GitHub Release `v1.0.0` exists; git tag `v1` resolves to the same commit as `v1.0.0`
 - [ ] `ghcr.io/mavogel/toolbox:1` pulls, `cosign verify` succeeds for the repo's workflow identity, and the smoke test passes against it
-- [ ] The package is private, so authenticate first: `gh auth token | docker login ghcr.io -u mavogel --password-stdin` (token needs `read:packages`)
-- [ ] Verify: `gh auth token | docker login ghcr.io -u mavogel --password-stdin && gh run list --workflow release.yml --limit 1 --json conclusion && gh release view v1.0.0 && git fetch --tags --force && test "$(git rev-list -n1 v1)" = "$(git rev-list -n1 v1.0.0)" && docker run --rm -v "$PWD/tests:/tests:ro" ghcr.io/mavogel/toolbox:1 /tests/smoke.sh`
+- [ ] The repository and the GHCR package are public (user-agreed), so the image pulls anonymously
+- [ ] Verify: `gh run list --workflow release.yml --limit 1 --json conclusion && gh release view v1.0.0 && git fetch --tags --force && test "$(git rev-list -n1 v1)" = "$(git rev-list -n1 v1.0.0)" && docker run --rm -v "$PWD/tests:/tests:ro" ghcr.io/mavogel/toolbox:1 /tests/smoke.sh`
 
 ## Deviations
 
@@ -385,3 +385,4 @@ Elevated debugging (tcpdump capture, raw-socket nmap) needs the operator to run 
 - Task 8 (tactical): the ruleset's `pull_request` rule also sets `allowed_merge_methods: ["squash"]`, matching the squash-merge design (the PR title becomes the commit semantic-release reads) → no new files.
 - Task 8 (user-agreed): drop `scripts/protect-main.sh`; the agent applies the `protect-main` ruleset directly with `gh api` after the user pushes `origin main` (same rules and required checks as the script's payload). Delete `scripts/protect-main.sh`, remove the "Protecting `main`" section's script reference from `README.md` (keep the rule list), and update Tasks 10 and 11 accordingly (Task 10 user action becomes push + install the Renovate app; protection is applied by the agent).
 - Task 5 (tactical, found by the first release run): `conventional-changelog-conventionalcommits` 10.4.1 needs `conventional-changelog-writer` 9, but semantic-release 25.0.9 bundles `release-notes-generator` 14.1.1 on writer 8, so `generateNotes` failed → pin the preset to 9.3.1 in `package.json` / `package-lock.json` and cap it with `allowedVersions: "<10"` in `renovate.json` until semantic-release moves to writer 9. Verified: notes and bump analysis render correctly with the repo's installed dependencies; `release` job had failed before creating any tag or release.
+- Task 11 (user-agreed): the user made the repository and the GHCR package public after the first release → the verification pulls anonymously (no `read:packages` login) and the README's private-package wording was updated; ruleset availability on a private repo is no longer a risk.
