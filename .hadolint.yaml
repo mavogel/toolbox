@@ -1,0 +1,4 @@
+ignored:
+  # Alpine drops superseded package versions from its mirrors, so apk packages
+  # are not version-pinned; freshness comes from the Renovate-pinned base digest.
+  - DL3018

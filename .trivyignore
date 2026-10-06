@@ -1,0 +1,9 @@
+# Accepted CRITICAL findings, one CVE id per line, each with a justification and
+# a review date. Any other fixable CRITICAL fails CI.
+
+# CVE-2025-68121: Go stdlib crypto/tls session-resumption certificate validation.
+# Present in upstream dive, grpcurl and vegeta, which are built with Go 1.22-1.25
+# and need an upstream rebuild. They are short-lived client-side debug CLIs, not
+# servers. Accepted 2026-10-06 (user-agreed); review 2027-01-06 or when those
+# tools ship a rebuild, whichever is first.
+CVE-2025-68121

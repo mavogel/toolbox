@@ -1,0 +1,29 @@
+# <binary> <check command>
+# The smoke test requires each binary to be on PATH and executable, and its check
+# command to exit 0. Every binary in /usr/local/bin must be listed here.
+kubectl kubectl version --client
+helm helm version
+k9s k9s version
+stern stern --version
+crictl crictl --version
+etcdctl etcdctl version
+grpcurl grpcurl -version
+yq yq --version
+dive dive --version
+trivy trivy --version
+vegeta vegeta -version
+curl curl --version
+openssl openssl version
+jq jq --version
+dig dig -v
+nslookup nslookup -version
+host host -V
+nc nc -h 2>&1 | grep -qi usage
+tcpdump tcpdump --version
+ip ip -V
+ss ss -V
+nmap nmap --version
+mtr mtr --version
+iperf3 iperf3 --version
+# busybox applet: --help exits non-zero, so match its usage text instead
+traceroute traceroute --help 2>&1 | grep -qi usage
