@@ -1,0 +1,11 @@
+#!/bin/sh
+# desc: scan every image running in a namespace (kimages + trivy)
+# usage: kscan [namespace|-A] [severity=HIGH,CRITICAL]
+set -eu
+case "${1:-}" in -h | --help) sed -n 's/^# usage: //p' "$0"; exit ;; esac
+dir=$(dirname "$0")
+sev=${2:-HIGH,CRITICAL}
+"$dir/kimages" "${1:-${NAMESPACE:-default}}" | cut -f4 | sort -u | while IFS= read -r img; do
+  echo "=== $img"
+  trivy image --severity "$sev" --quiet "$img" || true
+done

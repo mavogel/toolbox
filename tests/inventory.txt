@@ -27,3 +27,31 @@ mtr mtr --version
 iperf3 iperf3 --version
 # busybox applet: --help exits non-zero, so match its usage text instead
 traceroute traceroute --help 2>&1 | grep -qi usage
+# helper scripts (scripts/bin, installed to /opt/toolbox/bin)
+toolbox-list toolbox-list | grep -q certp
+certp certp --help
+certexp certexp --help
+dnsq dnsq --help
+curlt curlt --help
+portc portc --help
+kimages kimages --help
+klogs klogs --help
+listening listening --help
+routes routes --help
+pathq pathq --help
+scanp scanp --help
+bw bw --help
+pcap pcap --help
+kev kev --help
+kbad kbad --help
+kexec kexec --help
+kdns kdns --help
+hvals hvals --help
+cps cps --help
+etcdh etcdh --help
+grpcl grpcl --help
+load load --help
+hdrs hdrs --help
+scan scan --help
+kscan kscan --help
+kyaml kyaml --help

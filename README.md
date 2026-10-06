@@ -43,6 +43,48 @@ with `NET_RAW` / `NET_ADMIN`.
 
 `tests/inventory.txt` is the source of truth for this list.
 
+## Helper scripts
+
+Small POSIX `sh` wrappers around the tools above, on `PATH` via
+`/opt/toolbox/bin`. Run `toolbox-list` to see them all, or `<name> --help` for one.
+
+| Command | Purpose |
+|---------|---------|
+| `toolbox-list` | List all helper scripts with usage |
+| **TLS / HTTP / gRPC** | |
+| `certp <host> [port]` | Print the full TLS certificate |
+| `certexp <host> [port]` | Subject, issuer, validity dates and SANs |
+| `curlt <url> [curl options]` | Request with DNS/connect/TLS/TTFB/total timings |
+| `hdrs <url> [curl options]` | Response headers, following redirects |
+| `grpcl <host:port> [service] [-tls]` | List gRPC services or methods via reflection |
+| `load <url> [rate] [secs] [method]` | Constant-rate load test with latency summary |
+| **Network** | |
+| `dnsq <name> [type] [server]` | DNS lookup, optionally against a specific resolver |
+| `portc <host> <port>...` | Which TCP ports are open (exit 1 if any is closed) |
+| `pathq <host> [count]` | Network path report (`mtr` report mode) |
+| `scanp <host> [ports]` | Quick `nmap` scan, top 100 ports by default |
+| `bw <server> [secs]` / `bw -s` | `iperf3` client or server |
+| `pcap <iface> [filter] [secs]` | Time-boxed `tcpdump` (needs `NET_RAW`) |
+| `listening [port]` | Listening sockets |
+| `routes` | Addresses, routes and resolvers on one screen |
+| **Kubernetes** | |
+| `kbad [ns\|-A]` | Pods that are not Running/Completed, with restarts |
+| `kev [ns\|-A]` | Warning events, oldest first |
+| `kexec <pod-regex> [ns] [-- cmd]` | Exec into the first matching pod |
+| `klogs <pod-regex> [ns] [since]` | Tail logs of matching pods with `stern` |
+| `kimages [ns\|-A]` | Container images running in a namespace |
+| `kyaml <get args>` | `kubectl get -o yaml` without managedFields/status |
+| `kdns [name] [type]` | Resolve through the cluster DNS (from `resolv.conf`) |
+| `hvals <release> [ns]` | Helm release status and user values |
+| `cps [socket]` | `crictl` containers and images (auto-detects socket) |
+| `etcdh [endpoints] [cert dir]` | etcd endpoint health and status |
+| **Images** | |
+| `scan <image> [severity]` | `trivy` scan, HIGH and CRITICAL by default |
+| `kscan [ns] [severity]` | Scan every image running in a namespace |
+
+Add a script in `scripts/bin/` with `# desc:` and `# usage:` header lines
+(`toolbox-list` reads them) and an entry in `tests/inventory.txt`.
+
 ## Tags
 
 Each release publishes an immutable `X.Y.Z` tag and floating `X.Y`, `X` and

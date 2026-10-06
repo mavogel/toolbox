@@ -1,0 +1,6 @@
+#!/bin/sh
+# desc: network path report to a host (mtr report mode)
+# usage: pathq <host> [count=10]
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+exec mtr -rwz -c "${2:-10}" "$1"

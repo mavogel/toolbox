@@ -1,0 +1,10 @@
+#!/bin/sh
+# desc: show listening TCP/UDP sockets, optionally filtered by port
+# usage: listening [port]
+set -eu
+case "${1:-}" in -h | --help) sed -n 's/^# usage: //p' "$0"; exit ;; esac
+if [ -n "${1:-}" ]; then
+  ss -tulnp | awk -v p=":$1\$" 'NR == 1 || $5 ~ p'
+else
+  ss -tulnp
+fi

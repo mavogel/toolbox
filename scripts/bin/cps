@@ -1,0 +1,15 @@
+#!/bin/sh
+# desc: containers and images on a node via crictl (auto-detects the runtime socket)
+# usage: cps [socket]
+set -eu
+case "${1:-}" in -h | --help) sed -n 's/^# usage: //p' "$0"; exit ;; esac
+sock=${1:-}
+if [ -z "$sock" ]; then
+  for s in /run/containerd/containerd.sock /var/run/containerd/containerd.sock \
+    /run/crio/crio.sock /var/run/crio/crio.sock /var/run/cri-dockerd.sock; do
+    [ -S "$s" ] && { sock=$s; break; }
+  done
+fi
+[ -n "$sock" ] || { echo "cps: no runtime socket found; pass one (needs a node debug pod)" >&2; exit 1; }
+crictl -r "unix://$sock" ps -a
+echo; crictl -r "unix://$sock" images

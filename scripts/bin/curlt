@@ -1,0 +1,18 @@
+#!/bin/sh
+# desc: HTTP request with a timing breakdown (DNS, connect, TLS, TTFB, total)
+# usage: curlt <url> [curl options...]
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+url=$1
+shift
+curl -sS -o /dev/null --max-time 30 "$@" -w \
+'url:      %{url_effective}
+status:   %{http_code}
+remote:   %{remote_ip}:%{remote_port}
+dns:      %{time_namelookup}s
+connect:  %{time_connect}s
+tls:      %{time_appconnect}s
+ttfb:     %{time_starttransfer}s
+total:    %{time_total}s
+size:     %{size_download} bytes
+' "$url"

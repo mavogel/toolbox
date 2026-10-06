@@ -1,0 +1,13 @@
+#!/bin/sh
+# desc: etcd endpoint health and status (uses kubeadm cert paths if present)
+# usage: etcdh [endpoints=https://127.0.0.1:2379] [cert dir=/etc/kubernetes/pki/etcd]
+set -eu
+case "${1:-}" in -h | --help) sed -n 's/^# usage: //p' "$0"; exit ;; esac
+ep=${1:-https://127.0.0.1:2379}
+dir=${2:-/etc/kubernetes/pki/etcd}
+set -- --endpoints "$ep"
+if [ -r "$dir/ca.crt" ]; then
+  set -- "$@" --cacert "$dir/ca.crt" --cert "$dir/healthcheck-client.crt" --key "$dir/healthcheck-client.key"
+fi
+etcdctl "$@" endpoint health
+etcdctl "$@" endpoint status -w table

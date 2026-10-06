@@ -169,13 +169,18 @@ COPY --from=dive    --chmod=0755 /dl/dive    /usr/local/bin/dive
 COPY --from=trivy   --chmod=0755 /dl/trivy   /usr/local/bin/trivy
 COPY --from=vegeta  --chmod=0755 /dl/vegeta  /usr/local/bin/vegeta
 
+# Helper scripts (scripts/bin) live in their own directory on PATH; list them
+# with `toolbox-list`.
+COPY --chmod=0755 scripts/bin/ /opt/toolbox/bin/
+
 # Harden: drop setuid/setgid bits and the package manager (the package database
 # stays so image scanners can still read it), then add the unprivileged user.
 RUN find / -xdev -type f -perm /6000 -exec chmod a-s {} + \
  && apk --no-cache --purge del apk-tools \
  && adduser -D -u 10001 -h /home/toolbox toolbox
 
-ENV HOME=/home/toolbox
+ENV HOME=/home/toolbox \
+    PATH=/opt/toolbox/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 WORKDIR /home/toolbox
 USER 10001:10001
 CMD ["/bin/sh"]

@@ -1,0 +1,13 @@
+#!/bin/sh
+# desc: list all toolbox helper functions with their usage
+# usage: toolbox-list
+set -eu
+case "${1:-}" in -h | --help) sed -n 's/^# usage: //p' "$0"; exit ;; esac
+dir=${TOOLBOX_BIN:-$(dirname "$0")}
+for f in "$dir"/*; do
+  [ -f "$f" ] && [ -x "$f" ] || continue
+  usage=$(sed -n 's/^# usage: //p' "$f" | head -n 1)
+  desc=$(sed -n 's/^# desc: //p' "$f" | head -n 1)
+  [ -n "$usage" ] || continue
+  printf '%-45s %s\n' "$usage" "$desc"
+done

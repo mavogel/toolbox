@@ -1,0 +1,11 @@
+#!/bin/sh
+# desc: list gRPC services, or the methods of one, via server reflection
+# usage: grpcl <host:port> [service] [-tls]   (plaintext unless -tls)
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+target=$1 svc=${2:-}
+tls=-plaintext
+for a in "$@"; do [ "$a" = "-tls" ] && tls=; done
+[ "$svc" = "-tls" ] && svc=
+# shellcheck disable=SC2086 # $tls is empty or one flag
+grpcurl $tls "$target" list $svc

@@ -1,0 +1,8 @@
+#!/bin/sh
+# desc: response headers of a URL, following redirects
+# usage: hdrs <url> [curl options...]
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+url=$1
+shift
+curl -sSIL --max-time 30 "$@" "$url"

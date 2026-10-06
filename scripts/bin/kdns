@@ -1,0 +1,9 @@
+#!/bin/sh
+# desc: resolve a name through the cluster DNS (default: kubernetes.default.svc)
+# usage: kdns [name=kubernetes.default.svc] [type=A]
+set -eu
+case "${1:-}" in -h | --help) sed -n 's/^# usage: //p' "$0"; exit ;; esac
+ns=$(awk '/^nameserver/ { print $2; exit }' /etc/resolv.conf)
+[ -n "$ns" ] || { echo "kdns: no nameserver in /etc/resolv.conf" >&2; exit 1; }
+echo "resolver: $ns" >&2
+exec dig "@$ns" "${1:-kubernetes.default.svc}" "${2:-A}" +search +noall +answer +stats

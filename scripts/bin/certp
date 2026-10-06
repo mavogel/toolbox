@@ -1,0 +1,8 @@
+#!/bin/sh
+# desc: print the full TLS certificate of a host
+# usage: certp <host> [port=443]
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+host=$1 port=${2:-443}
+echo | openssl s_client -showcerts -servername "$host" -connect "$host:$port" 2>/dev/null |
+  openssl x509 -inform pem -noout -text

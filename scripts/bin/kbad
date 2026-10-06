@@ -1,0 +1,19 @@
+#!/bin/sh
+# desc: pods that are not Running/Completed, with restart counts
+# usage: kbad [namespace|-A]
+set -eu
+case "${1:-}" in -h | --help) sed -n 's/^# usage: //p' "$0"; exit ;; esac
+if [ "${1:-}" = "-A" ]; then
+  scope=-A
+else
+  scope="-n ${1:-${NAMESPACE:-default}}"
+fi
+# shellcheck disable=SC2086 # $scope is intentionally split
+kubectl get pods $scope -o json |
+  jq -r '.items[]
+    | select(.status.phase != "Succeeded")
+    | select(.status.phase != "Running" or any(.status.containerStatuses[]?; .ready | not))
+    | [.metadata.namespace, .metadata.name, .status.phase,
+       ([.status.containerStatuses[]?.restartCount] | add // 0 | tostring),
+       (.status.containerStatuses[]? | .state.waiting.reason // empty)] | @tsv' |
+  sort -u

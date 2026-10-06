@@ -1,0 +1,6 @@
+#!/bin/sh
+# desc: vulnerability scan of an image (trivy), HIGH and CRITICAL by default
+# usage: scan <image> [severity=HIGH,CRITICAL]
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+exec trivy image --severity "${2:-HIGH,CRITICAL}" --quiet "$1"

@@ -1,0 +1,14 @@
+#!/bin/sh
+# desc: time-boxed packet capture (needs NET_RAW, e.g. kubectl debug --profile=netadmin)
+# usage: pcap <iface|any> [bpf filter] [seconds=10]
+set -eu
+case "${1:-}" in '' | -h | --help) sed -n 's/^# usage: //p' "$0"; [ -n "${1:-}" ]; exit ;; esac
+iface=$1 filter=${2:-} secs=${3:-10}
+# SC2086: the BPF filter must be word-split into tcpdump arguments
+# shellcheck disable=SC2086
+timeout "$secs" tcpdump -i "$iface" -nn -l $filter || {
+  rc=$?
+  [ "$rc" -eq 124 ] && exit 0 # timeout reached: normal end of capture
+  echo "pcap: tcpdump failed (rc=$rc); raw capture needs NET_RAW/NET_ADMIN" >&2
+  exit "$rc"
+}

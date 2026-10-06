@@ -1,0 +1,15 @@
+#!/bin/sh
+# desc: list container images running in a namespace (or all namespaces)
+# usage: kimages [namespace|-A]
+set -eu
+case "${1:-}" in -h | --help) sed -n 's/^# usage: //p' "$0"; exit ;; esac
+if [ "${1:-}" = "-A" ]; then
+  scope=-A
+else
+  scope="-n ${1:-${NAMESPACE:-default}}"
+fi
+# shellcheck disable=SC2086 # $scope is intentionally split
+kubectl get pods $scope -o json |
+  jq -r '.items[] | .metadata.namespace as $ns | .metadata.name as $p
+         | .spec.containers[] | [$ns, $p, .name, .image] | @tsv' |
+  sort
