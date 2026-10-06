@@ -1,0 +1,32 @@
+queue_rules:
+  - name: default
+    update_method: merge
+    queue_conditions:
+      - author=renovate[bot]
+      - -label~=(do-not-merge)
+      - -label=major
+      - status-success=lint
+      - status-success=pr-title
+      - status-success=build-test (linux/amd64)
+      - status-success=build-test (linux/arm64)
+    merge_method: squash
+    # Squash merges make the PR title the commit semantic-release sees on main.
+    commit_message_template: |-
+      {{ title }} (#{{ number }})
+
+      {{ body }}
+pull_request_rules:
+  - name: Automatic merge of Renovate PRs on successful build
+    actions:
+      queue:
+        name: default
+    conditions:
+      - author=renovate[bot]
+      - -label~=(do-not-merge)
+      - -label=major
+      - status-success=lint
+      - status-success=pr-title
+      - status-success=build-test (linux/amd64)
+      - status-success=build-test (linux/arm64)
+merge_queue:
+  max_parallel_checks: 1
