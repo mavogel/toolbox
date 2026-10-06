@@ -47,6 +47,11 @@
       "allowedVersions": "<10"
     },
     {
+      "description": "Major updates get the major label, which keeps Mergify from auto-merging them",
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["major"]
+    },
+    {
       "description": "One PR for the Alpine digest bump",
       "matchDepNames": ["alpine"],
       "groupName": "alpine base image"
