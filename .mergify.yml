@@ -11,10 +11,9 @@ queue_rules:
       - status-success=build-test (linux/arm64)
     merge_method: squash
     # Squash merges make the PR title the commit semantic-release sees on main.
-    commit_message_template: |-
-      {{ title }} (#{{ number }})
-
-      {{ body }}
+    commit_message_format:
+      title: pr-title
+      body: pr-body
 pull_request_rules:
   - name: Automatic merge of Renovate PRs on successful build
     actions:
