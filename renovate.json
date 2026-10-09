@@ -6,6 +6,8 @@
     "helpers:pinGitHubActionDigests",
     "docker:pinDigests"
   ],
+  "automerge": true,
+  "platformAutomerge": true,
   "pre-commit": {
     "enabled": true
   },
@@ -47,9 +49,10 @@
       "allowedVersions": "<10"
     },
     {
-      "description": "Major updates get the major label, which keeps Mergify from auto-merging them",
+      "description": "Major updates get the major label and are never auto-merged",
       "matchUpdateTypes": ["major"],
-      "addLabels": ["major"]
+      "addLabels": ["major"],
+      "automerge": false
     },
     {
       "description": "One PR for the Alpine digest bump",
