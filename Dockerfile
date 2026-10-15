@@ -29,7 +29,7 @@ RUN curl -fsSLO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGET
 FROM fetch AS helm
 ARG TARGETARCH
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v4.3.0
+ARG HELM_VERSION=v4.3.1
 RUN f="helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz" \
  && curl -fsSLO "https://get.helm.sh/${f}" \
  && curl -fsSL "https://get.helm.sh/${f}.sha256sum" -o sums \
