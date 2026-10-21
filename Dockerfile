@@ -115,7 +115,7 @@ RUN f="dive_${DIVE_VERSION#v}_linux_${TARGETARCH}.tar.gz" \
 FROM fetch AS trivy
 ARG TARGETARCH
 # renovate: datasource=github-releases depName=aquasecurity/trivy
-ARG TRIVY_VERSION=v0.76.0
+ARG TRIVY_VERSION=v0.76.1
 RUN case "$TARGETARCH" in amd64) a=64bit ;; arm64) a=ARM64 ;; esac \
  && f="trivy_${TRIVY_VERSION#v}_Linux-${a}.tar.gz" \
  && curl -fsSLO "https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/${f}" \
