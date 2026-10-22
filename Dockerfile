@@ -3,7 +3,7 @@
 # builder stage; only the verified binaries are copied into the final image.
 
 # renovate: datasource=docker depName=alpine
-ARG ALPINE_IMAGE=alpine:3.24@sha256:c6b073f8e9e58d881f6ffba6ebf3b9ebd60b9e7d6e8337018c0e68bb5c356873
+ARG ALPINE_IMAGE=alpine:3.24@sha256:71e9b7bae160ba167fa17414401b94cbcdaf3c32feeab9298bd794a2a0614c35
 
 # ---------------------------------------------------------------------------
 # Shared download helper: verify <file> <sums-file> (scripts/verify-checksum.sh)
