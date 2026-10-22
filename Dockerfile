@@ -49,7 +49,7 @@ RUN f="k9s_Linux_${TARGETARCH}.tar.gz" \
 FROM fetch AS stern
 ARG TARGETARCH
 # renovate: datasource=github-releases depName=stern/stern
-ARG STERN_VERSION=v1.34.0
+ARG STERN_VERSION=v1.35.0
 RUN f="stern_${STERN_VERSION#v}_linux_${TARGETARCH}.tar.gz" \
  && curl -fsSLO "https://github.com/stern/stern/releases/download/${STERN_VERSION}/${f}" \
  && curl -fsSL "https://github.com/stern/stern/releases/download/${STERN_VERSION}/checksums.txt" -o sums \
