@@ -70,7 +70,7 @@ RUN f="crictl-${CRICTL_VERSION}-linux-${TARGETARCH}.tar.gz" \
 FROM fetch AS etcdctl
 ARG TARGETARCH
 # renovate: datasource=github-releases depName=etcd-io/etcd
-ARG ETCD_VERSION=v3.7.2
+ARG ETCD_VERSION=v3.7.3
 RUN f="etcd-${ETCD_VERSION}-linux-${TARGETARCH}.tar.gz" \
  && curl -fsSLO "https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/${f}" \
  && curl -fsSL "https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/SHA256SUMS" -o sums \
