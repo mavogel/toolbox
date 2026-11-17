@@ -92,7 +92,7 @@ FROM fetch AS yq
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG TARGETARCH
 # renovate: datasource=github-releases depName=mikefarah/yq
-ARG YQ_VERSION=v4.54.1
+ARG YQ_VERSION=v4.54.3
 # The yq checksums file lists many hash algorithms per line; SHA-256 is the 18th
 # hash column (see checksums_hashes_order), i.e. awk field 19.
 RUN f="yq_linux_${TARGETARCH}" \
